@@ -7,7 +7,12 @@ package protocol.auth.v1;
 option go_package = "github.com/harmony-development/legato/gen/auth/v1";
 
 // Used in `BeginAuth` endpoint.
-message BeginAuthRequest {}
+message BeginAuthRequest {
+  // The guest token for an account that will be upgraded
+  // from guest to full status by successful completion
+  // of the auth process.
+  optional for_guest_token = 1;
+}
 
 // BeginAuthResponse
 // The return type of BeginAuth, containing the
@@ -237,6 +242,19 @@ message CheckLoggedInRequest {}
 // Used in `CheckLoggedIn` endpoint.
 message CheckLoggedInResponse {}
 
+// Used in `GuestLogin` endpoint.
+message GuestLoginRequest {
+  // The display username of the guest account being created 
+  string username = 1;
+}
+// Used in `GuestLogin` endpoint.
+message GuestLoginResponse {
+  // A session for the newly created guest account
+  Session session = 1;
+  // The token that may be provided to BeginAuth to upgrade an account from guest to full status
+  string guest_token = 2;
+}
+
 // # Federation
 //
 // Servers should generate and persist an Ed25519 public and private
@@ -274,6 +292,21 @@ service AuthService {
   rpc Key(KeyRequest) returns (KeyResponse);
   // Begins an authentication session
   rpc BeginAuth(BeginAuthRequest) returns (BeginAuthResponse);
+  // Creates a "guest" account. A guest account is an
+  // account only identified by a given username and a "guest token."
+  //
+  // The guest token only exists to upgrade a guest account to a full
+  // account, and does not permit logging in with a guest account
+  // on more than one session.
+  //
+  // A "guest token" MAY be provided to BeginAuth to begin
+  // an authorization process that will upgrade the guest account
+  // to a full account if completed successfully.
+  // This MUST only affect now being able to log
+  // into the account with more than one session, and MUST not
+  // change other information about the account, such as username
+  // and password.
+  rpc GuestLogin(GuestLoginRequest) returns (GuestLoginResponse);
   // Goes to the next step of the authentication session,
   // possibly presenting user input
   rpc NextStep(NextStepRequest) returns (NextStepResponse);
