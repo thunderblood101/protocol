@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+import "harmonytypes/v1/types.proto";
+
+package protocol.bots.v1;
+
+message Bot {}
+
+message MyBotsRequest {}
+message MyBotsResponse {
+  repeated Bot bots = 1;
+}
+
+message CreateBotRequest {
+  string username = 1;
+}
+message CreateBotResponse {
+  uint64 bot_id = 1;
+}
+
+message EditBotRequest {
+  uint64 bot_id = 1;
+}
+message EditBotResponse {}
+
+message DeleteBotRequest {
+  uint64 bot_id = 1;
+}
+message DeleteBotResponse {}
+
+message GetBotRequest {
+  uint64 bot_id = 1;
+}
+message GetBotResponse {
+  Bot bot = 1;
+}
+
+message PoliciesRequest {}
+message PoliciesResponse {
+  // How many bots an individual account is allowed to own
+  uint32 max_bots = 1;
+}
+
+service Bots {
+  // Creates a new bot account
+  rpc MyBots(MyBotsRequest) returns (MyBotsResponse);
+  // Gets information on a given bot
+  rpc GetBot(GetBotRequest) returns (GetBotResponse);
+  // Creates a new bot account
+  rpc CreateBot(CreateBotRequest) returns (CreateBotResponse);
+  // Modifies a bot account that you own
+  rpc EditBot(EditBotRequest) returns (EditBotResponse);
+  // Deletes a bot account that you own
+  rpc DeleteBot(DeleteBotRequest) returns (DeleteBotResponse);
+  // Server policies for bot accounts that the client
+  // may display in its UI or restrict actions to prevent
+  // request errors
+  rpc Policies(PoliciesRequest) returns (PoliciesResponse);
+};
