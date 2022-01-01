@@ -1,6 +1,5 @@
----
-title: Harmony FAQ
----
+
+# Harmony FAQ
 
 ## What is Harmony?
 
