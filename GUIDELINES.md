@@ -1,6 +1,4 @@
----
-title: Protocol Guidelines
----
+# Protocol Guidelines
 
 Protocol endpoints adhere to the following standard naming conventions:
 
